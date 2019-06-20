@@ -1,0 +1,82 @@
+# Ingress deployment
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: traefik-ingress
+  namespace: kube-system
+  labels:
+    k8s-app: traefik-ingress-lb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: traefik-ingress-lb
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik-ingress-lb
+        name: traefik-ingress-lb
+    spec:
+      serviceAccountName: traefik-ingress
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: config
+          configMap:
+            name: traefik-conf
+      containers:
+      - image: traefik
+        name: traefik-ingress-lb
+        ports:
+        - name: http
+          containerPort: 80
+        - name: admin
+          containerPort: 8080
+        volumeMounts:
+            - mountPath: "/config"
+              name: "config"
+        args:
+        - --kubernetes.ingressClass=traefik-external
+        - --configFile=/config/traefik.toml
+        - --logLevel=INFO
+---
+# Ingress deployment (Multi-ingress setup)
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: traefik-ingress-2
+  namespace: kube-system
+  labels:
+    k8s-app: traefik-ingress-lb-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: traefik-ingress-lb-2
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik-ingress-lb-2
+        name: traefik-ingress-lb-2
+    spec:
+      serviceAccountName: traefik-ingress
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: config
+          configMap:
+            name: traefik-conf
+      containers:
+      - image: traefik
+        name: traefik-ingress-lb-2
+        ports:
+        - name: http
+          containerPort: 80
+        - name: admin
+          containerPort: 8080
+        volumeMounts:
+            - mountPath: "/config"
+              name: "config"
+        args:
+        - --kubernetes.ingressClass=traefik-internal
+        - --configFile=/config/traefik.toml
+        - --logLevel=INFO
+        

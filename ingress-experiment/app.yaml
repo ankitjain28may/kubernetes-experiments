@@ -1,0 +1,141 @@
+# App 1 Service
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-1
+  namespace: testing
+  annotations:
+    traefik.backend.circuitbreaker: "NetworkErrorRatio() > 0.5"
+spec:
+  selector:
+    name: backend-1
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP
+---
+# App 2 Service
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-2
+  namespace: testing
+  # annotations:
+  #   traefik.ingress.kubernetes.io/circuit-breaker-expression: "NetworkErrorRatio() > 0.1"
+  #   traefik.ingress.kubernetes.io/load-balancer-method: drr
+spec:
+  selector:
+    name: backend-2
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP
+---
+# App 3 Service
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-3
+  namespace: testing
+  # annotations:
+  #   traefik.ingress.kubernetes.io/circuit-breaker-expression: "NetworkErrorRatio() > 0.1"
+  #   traefik.ingress.kubernetes.io/load-balancer-method: drr
+spec:
+  selector:
+    name: backend-3
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP
+
+---
+# App 1 Deployment (node hello)
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: backend-1
+  namespace: testing
+  labels:
+    name: backend-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: backend-1
+  template:
+    metadata:
+      labels:
+        name: backend-1
+    spec:
+      containers:
+      - image: nginxdemos/hello
+        name: backend-1
+        ports:
+        - name: http
+          containerPort: 80
+ 
+---
+# App 2 Deployment (httpbin)
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: backend-2
+  namespace: testing
+  labels:
+    name: backend-2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: backend-2
+  template:
+    metadata:
+      labels:
+        name: backend-2
+    spec:
+      containers:
+      - image: kennethreitz/httpbin
+        name: backend-2
+        ports:
+        - name: http
+          containerPort: 80
+
+---
+# App 3 Deployment (httpbin)
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: backend-3
+  namespace: testing
+  labels:
+    name: backend-3
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: backend-3
+  template:
+    metadata:
+      labels:
+        name: backend-3
+    spec:
+      containers:
+      - image: kennethreitz/httpbin
+        name: backend-3
+        ports:
+        - name: http
+          containerPort: 80
+ 
+
+ 
+
+
+ 
+
+ 

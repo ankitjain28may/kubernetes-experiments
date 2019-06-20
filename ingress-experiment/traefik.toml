@@ -1,0 +1,72 @@
+# traefik.toml
+################################################################
+# Global configuration
+################################################################
+
+# Traefik logs file
+# If not defined, logs to stdout
+#
+# Optional
+#
+# traefikLogsFile = "log/traefik.log"
+
+# Access logs file
+#
+# Optional
+#
+# accessLogsFile = "log/access.log"
+
+# Log level
+#
+# Optional
+# Default: "ERROR"
+#
+# logLevel = "ERROR"
+
+# Backends throttle duration: minimum duration between 2 events from providers
+# before applying a new configuration. It avoids unnecessary reloads if multiples events
+# are sent in a short amount of time.
+#
+# Optional
+# Default: "2s"
+#
+# ProvidersThrottleDuration = "5s"
+
+# If non-zero, controls the maximum idle (keep-alive) to keep per-host.  If zero, DefaultMaxIdleConnsPerHost is used.
+# If you encounter 'too many open files' errors, you can either change this value, or change `ulimit` value.
+#
+# Optional
+# Default: http.DefaultMaxIdleConnsPerHost
+#
+# MaxIdleConnsPerHost = 200
+
+# Entrypoints to be used by frontends that do not specify any entrypoint.
+# Each frontend can specify its own entrypoints.
+#
+# Optional
+# Default: ["http"]
+#
+# defaultEntryPoints = ["http", "https"]
+
+[file]
+
+# rules
+[backends]
+  [backends.backend1]
+    [backends.backend1.circuitbreaker]
+      expression = "NetworkErrorRatio() > 0.5"
+    [backends.backend1.servers.server1]
+    url = "http://frontend-2:80"
+    weight = 10
+    [backends.backend1.servers.server2]
+    url = "http://frontend-3:80"
+    weight = 1
+
+[frontends]
+  [frontends.frontend2]
+  backend = "backend1"
+  passHostHeader = true
+  priority = 10
+  entrypoints = ["http"] # overrides defaultEntryPoints
+    [frontends.frontend2.routes.test_1]
+    rule = "Host:{subdomain:[a-z]+}.local"

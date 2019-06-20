@@ -1,0 +1,50 @@
+# Traefik configmap to define traefik.toml config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-conf
+  namespace: kube-system
+data:
+  traefik.toml: |
+    # traefik.toml
+    logLevel = "INFO"
+    defaultEntryPoints = ["http"]
+    [entryPoints]
+      [entryPoints.http]
+      address = ":80"
+    [api]
+      entryPoint = "traefik"
+      dashboard = true
+      debug = true
+    [file]
+    [backends]
+      [backends.traefik-1]
+        [backends.traefik-1.servers.server1]
+        url = "http://k8s.local/status/500"
+        weight = 1
+        [backends.traefik-1.servers.server2]
+        url = "http://k8s.local/status/200"
+        weight = 1
+        [backends.traefik-1.circuitBreaker]
+        expression = "NetworkErrorRatio() > 0.5"
+      [backends.frontend-2]
+        [backends.frontend-2.servers.server1]
+        url = "http://frontend-2:80"
+
+    [frontends]
+      [frontends.traefik-1]
+      backend = "traefik-1"
+      passHostHeader = true
+      priority = 10
+      entrypoints = ["http"] # overrides defaultEntryPoints
+        [frontends.traefik-1.routes.test_1]
+        rule = "Host:kube.local"
+        [frontends.traefik-1.routes.test_2]
+        rule = "Path:/status"
+      [frontends.frontend-2]
+      backend = "frontend-2"
+      passHostHeader = true
+      priority = 10
+      entrypoints = ["http"] # overrides defaultEntryPoints
+        [frontends.frontend-2.routes.test_3]
+        rule = "Host:{subdomain:[a-z]+}.local"
