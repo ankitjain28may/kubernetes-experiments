@@ -2,11 +2,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: traefik-ingress-service
+  name: traefik-ingress-service-1
   namespace: kube-system
 spec:
   selector:
-    k8s-app: traefik-ingress-lb
+    k8s-app: traefik-ingress-lb-1
   ports:
     - protocol: TCP
       port: 80
@@ -21,11 +21,11 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: traefik-web-ui
+  name: traefik-web-ui-1
   namespace: kube-system
 spec:
   selector:
-    k8s-app: traefik-ingress-lb
+    k8s-app: traefik-ingress-lb-1
   ports:
   - protocol: TCP
     name: admin

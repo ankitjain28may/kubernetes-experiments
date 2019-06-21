@@ -5,8 +5,7 @@ metadata:
   name: app-ingress
   namespace: testing
   annotations:
-    kubernetes.io/ingress.class: traefik-internal
-    # traefik.backend.circuitbreaker.expression: "NetworkErrorRatio() > 0.1"
+    kubernetes.io/ingress.class: traefik-class-1
     # traefik.ingress.kubernetes.io/service-weights: |
     #   frontend-3: 60%
     #   frontend-2: 40%
@@ -23,8 +22,8 @@ spec:
         backend:
           serviceName: frontend-3
           servicePort: http
-
-      # - path: /abc
-      #   backend:
-      #     serviceName: frontend-1
-      #     servicePort: http
+      - path: /abc
+        backend:
+          serviceName: frontend-1
+          servicePort: http
+      

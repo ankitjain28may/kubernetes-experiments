@@ -2,12 +2,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: traefik-web-ui
+  name: traefik-web-ui-1
   namespace: kube-system
   annotations:
-    kubernetes.io/ingress.class: traefik-external
-    ingress.kubernetes.io/auth-type: basic
-    ingress.kubernetes.io/auth-secret: admin
+    kubernetes.io/ingress.class: traefik-class-1
+    traefik.ingress.kubernetes.io/auth-type: basic
+    traefik.ingress.kubernetes.io/auth-secret: admin
 spec:
   rules:
   - host: k8s.local
@@ -15,7 +15,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: traefik-web-ui
+          serviceName: traefik-web-ui-1
           servicePort: admin
 
 ---
@@ -26,7 +26,7 @@ metadata:
   name: traefik-web-ui-2
   namespace: kube-system
   annotations:
-    kubernetes.io/ingress.class: traefik-internal
+    kubernetes.io/ingress.class: traefik-class-2
     ingress.kubernetes.io/auth-type: basic
     ingress.kubernetes.io/auth-secret: admin
 spec:

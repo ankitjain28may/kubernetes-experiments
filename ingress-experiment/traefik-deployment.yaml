@@ -2,42 +2,39 @@
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: traefik-ingress
+  name: traefik-ingress-1
   namespace: kube-system
   labels:
-    k8s-app: traefik-ingress-lb
+    k8s-app: traefik-ingress-lb-1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: traefik-ingress-lb
+      k8s-app: traefik-ingress-lb-1
   template:
     metadata:
       labels:
-        k8s-app: traefik-ingress-lb
-        name: traefik-ingress-lb
+        k8s-app: traefik-ingress-lb-1
+        name: traefik-ingress-lb-1
     spec:
       serviceAccountName: traefik-ingress
       terminationGracePeriodSeconds: 60
-      volumes:
-        - name: config
-          configMap:
-            name: traefik-conf
       containers:
       - image: traefik
-        name: traefik-ingress-lb
+        name: traefik-ingress-lb-1
         ports:
         - name: http
           containerPort: 80
         - name: admin
           containerPort: 8080
-        volumeMounts:
-            - mountPath: "/config"
-              name: "config"
         args:
-        - --kubernetes.ingressClass=traefik-external
-        - --configFile=/config/traefik.toml
+        - --kubernetes.ingressClass=traefik-class-1
+        - --kubernetes
         - --logLevel=INFO
+        - --api
+        # - --configFile=/config/traefik.toml
+
+
 ---
 # Ingress deployment (Multi-ingress setup)
 kind: Deployment
@@ -60,10 +57,6 @@ spec:
     spec:
       serviceAccountName: traefik-ingress
       terminationGracePeriodSeconds: 60
-      volumes:
-        - name: config
-          configMap:
-            name: traefik-conf
       containers:
       - image: traefik
         name: traefik-ingress-lb-2
@@ -72,11 +65,9 @@ spec:
           containerPort: 80
         - name: admin
           containerPort: 8080
-        volumeMounts:
-            - mountPath: "/config"
-              name: "config"
         args:
-        - --kubernetes.ingressClass=traefik-internal
-        - --configFile=/config/traefik.toml
+        - --kubernetes.ingressClass=traefik-class-2
+        - --kubernetes
         - --logLevel=INFO
+        - --api
         
