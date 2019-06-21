@@ -61,7 +61,7 @@ Run below command to setup this experiment.
 3. [http://k8s.local/status/500](http://k8s.local/status/500) will send HTTP 500 response page.
 4. [http://k8s.local/abc](http://k8s.local/abc) will serve helloworld page along with some pod info.
 
-##### Implementing CircuitBreaker
+#### Implementing CircuitBreaker
 
 1.  To implement circuitBreaker in Kubernetes, we need to set `traefik.ingress.kubernetes.io/circuit-breaker-expression` annotation to the corresponding service.
 
@@ -99,11 +99,10 @@ Run below command to setup this experiment.
     * RecoveringDuration
 
         The duration of the recovering mode (recovering state).
-
         By default, RecoveringDuration is **10 seconds**. **This value cannot be configured**.
 
 #### Conclusion
 
-* Traefik CircuitBreaker protects system from stacking requests to unhealthy service (It might be possible that few pods are unhealthy and the remaining pods are healthy which can also stop our application to serve the requests from healthy pods as the rule defined is same for atleast **10 seconds**).
+* Traefik CircuitBreaker protects system from stacking requests to unhealthy service (It might be possible that few pods are unhealthy and the remaining pods are healthy which can also stop our application to serve the requests from healthy pods for atleast **10 seconds** as the rule defined is same).
 
 * It is recommended to use LoadBalancing (**Dynamic Round Robin**: increases weights on servers that perform better than others. It also rolls back to original weights if the servers have changed.) along with Traefik CircuitBreaker, so the pods which are unhealthy, will get less weightage as compared to healthy pods and healthy pods can serve maximum requests.
