@@ -18,7 +18,7 @@ spec:
         backend:
           serviceName: frontend-2
           servicePort: http
-      - path: /status
+      - path: /delay
         backend:
           serviceName: frontend-3
           servicePort: http

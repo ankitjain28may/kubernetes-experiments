@@ -20,7 +20,7 @@ spec:
       serviceAccountName: traefik-ingress
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik
+      - image: traefik:v1.7
         name: traefik-ingress-lb-1
         ports:
         - name: http
@@ -30,8 +30,9 @@ spec:
         args:
         - --kubernetes.ingressClass=traefik-class-1
         - --kubernetes
-        - --logLevel=INFO
+        - --logLevel=DEBUG
         - --api
+        - --accesslog.fields.names='StartLocal=keep StartUTC=drop'
         # - --configFile=/config/traefik.toml
 
 
@@ -58,7 +59,7 @@ spec:
       serviceAccountName: traefik-ingress
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik
+      - image: traefik:v1.7
         name: traefik-ingress-lb-2
         ports:
         - name: http
@@ -68,6 +69,6 @@ spec:
         args:
         - --kubernetes.ingressClass=traefik-class-2
         - --kubernetes
-        - --logLevel=INFO
+        - --logLevel=DEBUG
         - --api
         

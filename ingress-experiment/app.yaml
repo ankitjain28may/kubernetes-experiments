@@ -27,6 +27,7 @@ metadata:
     traefik.ingress.kubernetes.io/circuit-breaker-expression: "ResponseCodeRatio(500, 600, 0, 600) > 0.5"
     # traefik.ingress.kubernetes.io/circuit-breaker-expression: "NetworkErrorRatio() > 0.1"
     traefik.ingress.kubernetes.io/load-balancer-method: drr
+    traefik.ingress.kubernetes.io/affinity: "true"
 spec:
   selector:
     name: backend-2
@@ -46,7 +47,9 @@ metadata:
   annotations:
     # traefik.backend.circuitbreaker: "ResponseCodeRatio(500, 600, 0, 600) > 0.1"
     traefik.ingress.kubernetes.io/circuit-breaker-expression: "ResponseCodeRatio(500, 600, 0, 600) > 0.5"
+    # traefik.ingress.kubernetes.io/circuit-breaker-expression: "NetworkErrorRatio() > 0.1"
     traefik.ingress.kubernetes.io/load-balancer-method: drr
+    traefik.ingress.kubernetes.io/affinity: "true"
 spec:
   selector:
     name: backend-3
@@ -134,11 +137,3 @@ spec:
         ports:
         - name: http
           containerPort: 80
- 
-
- 
-
-
- 
-
- 
