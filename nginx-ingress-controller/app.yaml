@@ -1,0 +1,61 @@
+# App 1 Service
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-11
+  namespace: testing
+spec:
+  selector:
+    name: backend-11
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP
+---
+
+# App 1 Deployment (node hello)
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: backend-11
+  namespace: testing
+  labels:
+    name: backend-11
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: backend-11
+  template:
+    metadata:
+      labels:
+        name: backend-11
+    spec:
+      containers:
+      - image: nginxdemos/hello
+        name: backend-11
+        ports:
+        - name: http
+          containerPort: 80
+
+---
+# App Ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: app-ingress-testing
+  namespace: testing
+  annotations:
+    kubernetes.io/ingress.class: nginx-internal
+spec:
+  rules:
+  - host: k8s-internal.local
+    http:
+      paths:
+      - path: /abc
+        backend:
+          serviceName: frontend-11
+          servicePort: http
+      
